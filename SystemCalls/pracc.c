@@ -1,60 +1,59 @@
 #include<stdio.h>
-
-int waitingtime(int proc[], int n, int burst_time[], int wait_time[]){
-  wait_time[0] = 0;
-  for(int i = 1; i<n; i++){
-     wait_time[i] = burst_time[i-1] + wait_time[i-1]; 
-  }
-  return 0;
-}
-
-int turnaroundtime(int proc[], int n, int burst_time[], int wait_time[], int tat[]){
-  int i;
-  for(int i=0; i<n; i++){
-     tat[i] = burst_time[i]+ wait_time[i]; 
-  }
-  return 0;
-}
-
-int avgtime(int proc[], int n, int burst_time[]){
-  int wait_time[n], tat[n], total_wt = 0, total_tat = 0;
-  waitingtime(proc,n,burst_time,wait_time);
-  turnaroundtime(proc,n,burst_time, wait_time, tat);
-  
-  printf("Processes  Burst   Waiting Turn around\n");
-  for(int i=0; i<n; i++){
-     total_wt = total_wt + wait_time[i];
-     total_tat = total_tat + tat[i];
-     printf(" %d\t  %d\t\t %d \t%d\n",i+1,burst_time[i], wait_time[i],tat[i]); 
-  }
-  
-  printf("\nAverage Waiting time: %f", (float)total_wt/(float)n);
-  printf("\nAverage turnaround time: %f",(float)total_tat/(float)n);
-  
-  return 0;
-}
-
 int main(){
-  int proc[] = {1,2,3};
-  int n = sizeof proc/ sizeof proc[0];
-  int burst_time[] = {20,3,3};
-  avgtime(proc,n,burst_time);
+
+  int bt[20],wt[20],tat[20],p[20],i,j,n,total=0,pos,temp;
+  float avg_wt, avg_tat;
+  
+  printf("Enter number of Processes:");
+  scanf("%d", &n);
+  
+  printf("\nEnter the burst time:\n");
+  for(i=0; i<n; i++){
+     printf("P%d:",i+1);
+     scanf("%d", &bt[i]);
+  }
+
+  for(i = 0; i<n; i++){
+     pos = i;
+     for(j=0;j<n;j++){
+        if(bt[j]<bt[pos]){
+           pos = j;
+        }
+     }
+     temp = bt[i];
+     bt[i] = bt[pos];
+     bt[pos] = temp;
+  
+     temp = p[i];
+     p[i] = p[pos];
+     p[pos] = temp;
+  }
+  
+  wt[0] = 0;
+  for(i =1; i<n; i++){
+     wt[i]=0;
+     for(j=0; j<n;j++){
+        wt[i] = wt[i] + bt[j];   
+     }
+     total = total + wt[i];
+  }
+  
+   
+   avg_wt = (float)total/(float)n;
+   total = 0;
+   
+   printf("\nProcesses  Burst   Waiting Turn around\n");
+   for(i = 0; i<n; i++){
+      tat[i] = bt[i] + wt[i];
+      total = total + tat[i];
+      printf(" %d\t %d\t\t %d \t%d\n",i+1,bt[i],wt[i],tat[i]);
+   
+   }
+  avg_tat = (float)total/(float)n;
+  
+  printf("\n\nAVG WT = %f",avg_wt);
+  printf("\nAVG TAT = %f",avg_tat);
+  
 
   return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
